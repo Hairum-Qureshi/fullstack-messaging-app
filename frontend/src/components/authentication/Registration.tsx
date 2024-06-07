@@ -28,26 +28,5 @@ export default function Registration() {
 		}
 	}
 
-	return (
-		<div>
-			<form onSubmit={registerUser}>
-				<input
-					type="text"
-					placeholder="username"
-					onChange={e => setUsername(e.target.value)}
-				/>
-				<input
-					type="email"
-					placeholder="email"
-					onChange={e => setEmail(e.target.value)}
-				/>
-				<input
-					type="password"
-					placeholder="password"
-					onChange={e => setPassword(e.target.value)}
-				/>
-				<button type="submit">Create Account</button>
-			</form>
-		</div>
-	);
+	return <div>Sign up</div>;
 }
