@@ -8,7 +8,7 @@ export default function Authentication() {
 
 	return (
 		<div className="flex w-full h-screen">
-			<div>
+			<div className="w-full flex items-center justify-center lg:w-1/2">
 				{location.pathname.includes("/sign-up") ? (
 					<Registration />
 				) : location.pathname.includes("/sign-in") ? (
@@ -17,7 +17,9 @@ export default function Authentication() {
 					<NotFound />
 				)}
 			</div>
-			<div></div>
+			<div className="bg-gray-200 hidden lg:flex h-full items-center w-1/2 justify-center">
+				<div className="w-60 h-60 bg-gradient-to-tr from-blue-500 to-blue-200 rounded-full"></div>
+			</div>
 		</div>
 	);
 }
