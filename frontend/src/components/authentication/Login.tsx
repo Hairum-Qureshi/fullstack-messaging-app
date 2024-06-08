@@ -1,12 +1,20 @@
+// TODO - add a link redirecting the user to the register page if they don't have an account
+
+import { Link } from "react-router-dom";
+
 export default function Login() {
 	return (
-		<div className="bg-white">
+		<div className="bg-white p-5">
 			<h1 className="text-5xl font-semibold text-center lg:text-left">
 				Welcome back!
 			</h1>
 			<p className="font-medium text-lg text-gray-500 mt-4 text-center lg:text-left">
-				Welcome back to React Chat, please enter your details to login and
-				resume chatting.
+				Welcome back to React Chat. Please enter your details to login and
+				resume chatting. Don't have an account? Click&nbsp;
+				<Link to="/sign-up" className="text-blue-600">
+					here
+				</Link>{" "}
+				to create an account!
 			</p>
 			<div className="mt-8">
 				<div>
@@ -47,6 +55,11 @@ export default function Login() {
 						Forgot Password
 					</button>
 				</div>
+			</div>
+			<div className="w-full mt-6 text-center">
+				<button className="text-xl m-auto border-2 py-2.5 rounded-md w-1/2 bg-blue-600 text-white">
+					Login
+				</button>
 			</div>
 		</div>
 	);
