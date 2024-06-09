@@ -1,10 +1,11 @@
 import express from "express";
-import e, { Request, Response } from "express";
+import { Request, Response } from "express";
 import { StreamChat } from "stream-chat";
 import dotenv from "dotenv";
 import { randomUUID } from "crypto";
 import validator from "email-validator";
 import vd from "validator";
+import bcrypt from "bcrypt";
 
 dotenv.config();
 
@@ -22,7 +23,6 @@ router.post("/register", async (req: Request, res: Response) => {
 	// TODO: check if an email already exists and/or username already exists
 	// TODO - make sure to blacklist usernames like "admin"
 	// TODO - need to add a filter to prevent users from adding swear words and inappropriate usernames
-	// TODO - encrypt password
 
 	try {
 		const emailRegex: RegExp =
@@ -48,7 +48,14 @@ router.post("/register", async (req: Request, res: Response) => {
 						} else {
 							const uid = randomUUID().replace(/-/g, "");
 
-							streamChat.upsertUser({ id: uid, username, email, password });
+							const hashedPassword = await bcrypt.hash(password, 10);
+
+							streamChat.upsertUser({
+								id: uid,
+								username,
+								email,
+								password: hashedPassword
+							});
 
 							res.status(200).send("Successfully registered!");
 						}
