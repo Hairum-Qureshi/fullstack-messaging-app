@@ -1,7 +1,15 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import useAuthentication from "../../hooks/useAuthentication";
 
 export default function Registration() {
+	const [username, setUsername] = useState("");
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+
 	const navigate = useNavigate();
+
+	const { registerUser } = useAuthentication();
 
 	return (
 		<div className="bg-white p-5">
@@ -22,6 +30,7 @@ export default function Registration() {
 						id="username"
 						placeholder="Username"
 						className="w-full border-2 border-gray-100 rounded-md mt-1 p-4 outline-gray-300"
+						onChange={e => setUsername(e.target.value)}
 					/>
 				</div>
 			</div>
@@ -35,6 +44,7 @@ export default function Registration() {
 						id="email"
 						placeholder="Email"
 						className="w-full border-2 border-gray-100 rounded-md mt-1 p-4 outline-gray-300"
+						onChange={e => setEmail(e.target.value)}
 					/>
 				</div>
 			</div>
@@ -51,6 +61,7 @@ export default function Registration() {
 						id="password"
 						placeholder="Password"
 						className="w-full border-2 border-gray-100 rounded-md mt-1 p-4 outline-gray-300"
+						onChange={e => setPassword(e.target.value)}
 					/>
 				</div>
 			</div>
@@ -69,7 +80,10 @@ export default function Registration() {
 				</div>
 			</div>
 			<div className="w-full mt-6 text-center">
-				<button className="text-xl m-auto border-2 py-2.5 rounded-md w-1/2 bg-blue-600 text-white">
+				<button
+					className="text-xl m-auto border-2 py-2.5 rounded-md w-1/2 bg-blue-600 text-white"
+					onClick={() => registerUser(username, email, password)}
+				>
 					Create Account
 				</button>
 			</div>

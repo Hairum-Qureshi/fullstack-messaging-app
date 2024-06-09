@@ -1,8 +1,11 @@
 // TODO - add a link redirecting the user to the register page if they don't have an account
-
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 export default function Login() {
+	const [username, setUsername] = useState("");
+	const [email, setEmail] = useState("");
+
 	return (
 		<div className="bg-white p-5">
 			<h1 className="text-5xl font-semibold text-center lg:text-left">
@@ -13,8 +16,8 @@ export default function Login() {
 				resume chatting. Don't have an account? Click&nbsp;
 				<Link to="/sign-up" className="text-blue-600">
 					here
-				</Link>{" "}
-				to create an account!
+				</Link>
+				&nbsp;to create an account!
 			</p>
 			<div className="mt-8">
 				<div>
@@ -26,6 +29,7 @@ export default function Login() {
 						id="email"
 						placeholder="Email"
 						className="w-full border-2 border-gray-100 rounded-md mt-1 p-4 outline-gray-300"
+						onChange={e => setEmail(e.target.value)}
 					/>
 				</div>
 			</div>
@@ -42,6 +46,7 @@ export default function Login() {
 						id="password"
 						placeholder="Password"
 						className="w-full border-2 border-gray-100 rounded-md mt-1 p-4 outline-gray-300"
+						onChange={e => setPassword(e.target.value)}
 					/>
 				</div>
 			</div>
