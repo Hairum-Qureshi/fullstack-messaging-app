@@ -9,7 +9,7 @@ export default function Registration() {
 
 	const navigate = useNavigate();
 
-	const { registerUser } = useAuthentication();
+	const { registerUser, loading } = useAuthentication();
 
 	return (
 		<div className="bg-white p-5">
@@ -84,7 +84,7 @@ export default function Registration() {
 					className="text-xl m-auto border-2 py-2.5 rounded-md w-1/2 bg-blue-600 text-white"
 					onClick={() => registerUser(username, email, password)}
 				>
-					Create Account
+					{!loading ? "Create Account" : "Loading..."}
 				</button>
 			</div>
 		</div>
