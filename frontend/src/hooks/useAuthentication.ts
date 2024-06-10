@@ -25,6 +25,9 @@ export default function useAuthentication(): AuthTools {
 						username,
 						email,
 						password
+					},
+					{
+						withCredentials: true
 					}
 				);
 
@@ -53,6 +56,9 @@ export default function useAuthentication(): AuthTools {
 					{
 						email,
 						password
+					},
+					{
+						withCredentials: true
 					}
 				);
 
