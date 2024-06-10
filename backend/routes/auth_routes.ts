@@ -24,7 +24,6 @@ function createCookie(uid: string, res: Response) {
 router.post("/register", async (req: Request, res: Response) => {
 	const { username, email, password } = req.body;
 
-	// TODO - need to provide a default user profile picture
 	// TODO: check if an email already exists and/or username already exists
 	// TODO - make sure to blacklist usernames like "admin"
 	// TODO - need to add a filter to prevent users from adding swear words and inappropriate usernames
