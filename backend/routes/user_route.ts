@@ -77,4 +77,21 @@ router.post("/register", async (req: Request, res: Response) => {
 	}
 });
 
+router.post("/login", async (req: Request, res: Response) => {
+	// TODO - need to connect to MongoDB and create a User model to handle authentication better. This does not check if the user's password is correct; only their email
+	const { email, password } = req.body;
+
+	const checkExistingEmail = await streamChat.queryUsers({ email });
+	console.log(checkExistingEmail);
+	try {
+		if (checkExistingEmail.users.length > 0) {
+			res.status(200).send("FOUND");
+		} else {
+			res.status(404).send("NOT FOUND");
+		}
+	} catch (error) {
+		console.log(error);
+	}
+});
+
 export default router;
