@@ -11,7 +11,7 @@ dotenv.config();
 
 const router = express.Router();
 
-const streamChat = StreamChat.getInstance(
+export const streamChat = StreamChat.getInstance(
 	process.env.STREAM_API_KEY!,
 	process.env.STREAM_SECRET_KEY!
 );
@@ -59,6 +59,8 @@ router.post("/register", async (req: Request, res: Response) => {
 								id: uid,
 								username,
 								email,
+								image:
+									"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
 								password: hashedPassword
 							});
 
