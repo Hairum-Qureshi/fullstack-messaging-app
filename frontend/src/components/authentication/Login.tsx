@@ -1,10 +1,13 @@
 // TODO - add a link redirecting the user to the register page if they don't have an account
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import useAuthentication from "../../hooks/useAuthentication";
 
 export default function Login() {
-	const [username, setUsername] = useState("");
 	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+
+	const { loginUser, loading } = useAuthentication();
 
 	return (
 		<div className="bg-white p-5">
@@ -62,8 +65,8 @@ export default function Login() {
 				</div>
 			</div>
 			<div className="w-full mt-6 text-center">
-				<button className="text-xl m-auto border-2 py-2.5 rounded-md w-1/2 bg-blue-600 text-white">
-					Login
+				<button className="text-xl m-auto border-2 py-2.5 rounded-md w-1/2 bg-blue-600 text-white" onClick = {() => loginUser(email, password)}>
+					{!loading ? "Login" : "Loading..."}
 				</button>
 			</div>
 		</div>
