@@ -1,7 +1,10 @@
+import { StreamChat } from "stream-chat";
+
 export interface ContextData {
 	userData: User | null;
 	error: string | null;
 	signOut: () => void;
+	streamChat?: StreamChat;
 }
 
 export interface AuthProps {
@@ -15,9 +18,10 @@ export interface AuthTools {
 }
 
 export interface User {
-	uid: string;
+	id: string;
 	username: string;
 	email: string;
 	profile_picture: string;
 	token: string;
+	message?: string;
 }
