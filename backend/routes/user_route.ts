@@ -16,6 +16,11 @@ const streamChat = StreamChat.getInstance(
 	process.env.STREAM_SECRET_KEY!
 );
 
+function createCookie(uid: string, res: Response) {
+	const token: string = streamChat.createToken(uid);
+	res.cookie("auth-session", token, { httpOnly: true, maxAge: 259200000 }); // 3 days in milliseconds
+}
+
 router.post("/register", async (req: Request, res: Response) => {
 	const { username, email, password } = req.body;
 
@@ -57,6 +62,8 @@ router.post("/register", async (req: Request, res: Response) => {
 								password: hashedPassword
 							});
 
+							createCookie(uid, res);
+
 							res.status(200).send("Successfully registered!");
 						}
 					} else {
@@ -82,9 +89,10 @@ router.post("/login", async (req: Request, res: Response) => {
 	const { email, password } = req.body;
 
 	const checkExistingEmail = await streamChat.queryUsers({ email });
-	console.log(checkExistingEmail);
 	try {
 		if (checkExistingEmail.users.length > 0) {
+			const uid: string = checkExistingEmail.users[0].id;
+			createCookie(uid, res);
 			res.status(200).send("FOUND");
 		} else {
 			res.status(404).send("NOT FOUND");
