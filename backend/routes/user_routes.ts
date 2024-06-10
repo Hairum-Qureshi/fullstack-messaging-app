@@ -1,12 +1,11 @@
 import express from "express";
 import { Request, Response } from "express";
-import dotenv from "dotenv";
 import { streamChat } from "./auth_routes";
 
 const router = express.Router();
 
 router.get("/current", async (req: Request, res: Response) => {
-	if (req.cookies !== undefined) {
+	if (req.cookies["auth-session"] !== undefined) {
 		const token = req.cookies["auth-session"];
 		const payloadBase64 = token.split(".")[1];
 		const payloadBuffer = Buffer.from(payloadBase64, "base64");
