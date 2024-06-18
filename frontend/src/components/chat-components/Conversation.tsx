@@ -1,11 +1,21 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFaceSmile, faImage } from "@fortawesome/free-regular-svg-icons";
+import "../../css/index.css";
 
 export default function Conversation() {
 	const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+	const [isEmpty, setIsEmpty] = useState(true);
+	const contentEditableRef = useRef<HTMLDivElement>(null);
+
+	function handleInput() {
+		if (contentEditableRef.current) {
+			setIsEmpty(contentEditableRef.current.innerText.trim() === "");
+		}
+	}
+
 	// TODO - need to make sure the text message bubbles can handle images - if not, need to modify CSS so they're displayed appropriately
 
 	function userPasted(e: any) {
@@ -111,8 +121,13 @@ export default function Conversation() {
 						</div>
 						<div
 							contentEditable="plaintext-only"
-							className="w-11/12 m-1 resize-none appearance-none text-black p-2"
-							onPaste={e => userPasted(e)}
+							className={`w-11/12 m-1 resize-none appearance-none text-black p-2 ${
+								isEmpty ? "placeholder" : ""
+							}`}
+							data-placeholder="Type a message..."
+							onPaste={e => userPasted(e as ClipboardEvent)}
+							onInput={handleInput}
+							ref={contentEditableRef}
 						></div>
 						<div className="flex items-center">
 							<FontAwesomeIcon icon={faImage} className="text-2xl ml-2" />
