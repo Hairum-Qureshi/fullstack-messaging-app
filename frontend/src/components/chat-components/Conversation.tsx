@@ -124,8 +124,8 @@ export default function Conversation() {
 							className={`w-11/12 m-1 resize-none appearance-none text-black p-2 ${
 								isEmpty ? "placeholder" : ""
 							}`}
-							data-placeholder="Type a message..."
-							onPaste={e => userPasted(e as ClipboardEvent)}
+							data-placeholder="Type a message to John Doe"
+							onPaste={e => userPasted(e)}
 							onInput={handleInput}
 							ref={contentEditableRef}
 						></div>
