@@ -1,6 +1,9 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useAuthContext from "../../contexts/authContext";
 import Home from "../Home";
 import ContactBlock from "./ContactBlock";
+import Conversation from "./Conversation";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
 
 export default function Inbox() {
 	const { userData } = useAuthContext()!;
@@ -16,25 +19,12 @@ export default function Inbox() {
 					/>
 				</div>
 				<ContactBlock />
-				<ContactBlock />
-				<ContactBlock />
-				<ContactBlock />
-				<ContactBlock />
-				<ContactBlock />
-				<ContactBlock />
-				<ContactBlock />
-				<ContactBlock />
-				<ContactBlock />
-				<ContactBlock />
-				<ContactBlock />
-				<ContactBlock />
-				<ContactBlock />
-				<ContactBlock />
-				<ContactBlock />
+				<div className="bottom-0 p-3 absolute w-72 border-slate-400 border-2 bg-white">
+					<FontAwesomeIcon icon={faBars} className="text-2xl" />
+				</div>
 			</div>
-			<div className="w-full hidden lg:block h-screen"></div>
-			<div className="bottom-0 p-3 absolute w-72 border-slate-400 border-2 bg-white">
-				<p>Settings Here</p>
+			<div className="w-full hidden lg:block h-screen">
+				<Conversation />
 			</div>
 		</div>
 	) : (

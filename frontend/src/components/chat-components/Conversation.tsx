@@ -1,17 +1,24 @@
 import { useState } from "react";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFaceSmile, faImage } from "@fortawesome/free-regular-svg-icons";
 
 export default function Conversation() {
 	const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+	// TODO - need to make sure the text message bubbles can handle images - if not, need to modify CSS so they're displayed appropriately
 
-	function userPasted(e: ClipboardEvent) {
+	function userPasted(e: any) {
+		// TODO - need to change 'any' to an appropriate type for 'e'
+		// Function for handling when the user pastes an image into the content-edible div
+
 		const image = e.clipboardData || window.Clipboard;
 		const file = image.files[0];
 		if (file) {
 			var reader = new FileReader();
 
 			reader.onloadend = () => {
+				console.log(reader.result);
 				const blob = new Blob([file], { type: file.type });
 				const imageURL = URL.createObjectURL(blob);
 				setUploadedImages(prev => [...prev, imageURL]);
@@ -93,15 +100,23 @@ export default function Conversation() {
 						))}
 					</div>
 				)}
-
 				<div className="w-full border-2 border-black">
-					<div className="flex bg-gray-100 p-1">
+					<div className="flex bg-gray-100 p-1 mr-4 w-full">
 						{/* <Picker data={data} onEmojiSelect={console.log} /> */}
+						<div className="flex items-center">
+							<FontAwesomeIcon
+								icon={faFaceSmile}
+								className="text-2xl ml-2 mr-2"
+							/>
+						</div>
 						<div
 							contentEditable="plaintext-only"
 							className="w-11/12 m-1 resize-none appearance-none text-black p-2"
-							onPaste={e => userPasted(e as ClipboardEvent)}
+							onPaste={e => userPasted(e)}
 						></div>
+						<div className="flex items-center">
+							<FontAwesomeIcon icon={faImage} className="text-2xl ml-2" />
+						</div>
 					</div>
 				</div>
 			</div>

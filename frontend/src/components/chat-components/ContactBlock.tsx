@@ -20,6 +20,7 @@ export default function ContactBlock() {
 					</p>
 				</div>
 			</div>
+			{/* Notification bubble: (comment out for now) */}
 			{/* <div className="items-center justify-start mr-2">
 				<div className="rounded-full w-3 h-3 bg-red-500"></div>
 			</div> */}
