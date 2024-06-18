@@ -1,0 +1,110 @@
+import { useState } from "react";
+import data from "@emoji-mart/data";
+import Picker from "@emoji-mart/react";
+
+export default function Conversation() {
+	const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+
+	function userPasted(e: ClipboardEvent) {
+		const image = e.clipboardData || window.Clipboard;
+		const file = image.files[0];
+		if (file) {
+			var reader = new FileReader();
+
+			reader.onloadend = () => {
+				const blob = new Blob([file], { type: file.type });
+				const imageURL = URL.createObjectURL(blob);
+				setUploadedImages(prev => [...prev, imageURL]);
+			};
+
+			if (file) {
+				reader.readAsDataURL(file);
+			}
+		}
+	}
+
+	return (
+		<div className="h-screen flex flex-col">
+			<div className="w-full border-b-slate-400 p-1 border-2 flex items-center">
+				<div className="inline-flex">
+					<div className="relative">
+						<img
+							src="https://pbs.twimg.com/media/FegInEPXkAAS1PE.png"
+							alt="User pfp"
+							className="w-10 h-10 rounded-full border-2 border-black mr-2"
+						/>
+						<div className="absolute bottom-0 right-3">
+							<div className="rounded-full w-3 h-3 bg-green-500"></div>
+						</div>
+					</div>
+					<div className="flex items-center">
+						<p className="text-base font-semibold">John Doe</p>
+					</div>
+				</div>
+			</div>
+			<div className="flex-grow overflow-auto border-2 border-blue-700">
+				<div className="flex p-2">
+					<img
+						src="https://pbs.twimg.com/media/FegInEPXkAAS1PE.png"
+						alt="User pfp"
+						className="w-10 h-10 rounded-full border-2 border-black mr-2"
+					/>
+					<div>
+						<p className="text-base bg-blue-300 p-2 rounded-lg rounded-tl">
+							Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat
+							perspiciatis maxime, pariatur aliquid molestias in quidem cumqu.
+							Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias
+							officiis reprehenderit sunt sapiente vitae, qui voluptate?
+							Repudiandae hic, dolorem ipsam deleniti harum beatae eius dolores
+							molestias rem error, magnam pariatur?
+							<p className="text-xs text-right">
+								<i>Jun 17 2024, 8:07 PM</i>
+							</p>
+						</p>
+					</div>
+				</div>
+				<div className="flex text-right p-2">
+					<div className="ml-auto">
+						<p className="text-base bg-green-300 p-2 rounded-lg rounded-t ml-auto">
+							Hello
+							<p className="text-xs text-left">
+								<i>Jun 17 2024, 8:07 PM</i>
+							</p>
+						</p>
+					</div>
+					<img
+						src="https://pbs.twimg.com/media/FegInEPXkAAS1PE.png"
+						alt="User pfp"
+						className="w-10 h-10 rounded-full border-2 border-black ml-2"
+					/>
+				</div>
+			</div>
+			<div className="relative bottom-0 w-full">
+				{uploadedImages.length > 0 && (
+					<div className="inline-flex overflow-x-auto border-2 border-black w-full">
+						{uploadedImages.map((imageURL: string, index: number) => (
+							<div key={index} className="p-2">
+								<img
+									src={imageURL}
+									alt="Uploaded Image"
+									className="w-44 h-44 bg-cover rounded-md ml-1 mr-1"
+								/>
+							</div>
+						))}
+					</div>
+				)}
+
+				<div className="w-full border-2 border-black">
+					<div className="flex bg-gray-100 p-1">
+						{/* <Picker data={data} onEmojiSelect={console.log} /> */}
+						<div
+							contentEditable="plaintext-only"
+							className="w-11/12 m-1 resize-none appearance-none text-black p-2"
+							onPaste={e => userPasted(e as ClipboardEvent)}
+						></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	);
+}
