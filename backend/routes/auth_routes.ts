@@ -2,6 +2,7 @@ import express from "express";
 import { Request, Response } from "express";
 import dotenv from "dotenv";
 import User from "../models/user";
+import Contact from "../models/contact";
 import validator from "email-validator";
 import vd from "validator";
 import bcrypt from "bcrypt";
@@ -43,7 +44,6 @@ router.post("/register", async (req: Request, res: Response) => {
 			} else {
 				if (containsValidCharacters) {
 					const isValidEmail = validator.validate(email);
-
 					if (isValidEmail) {
 						if (!vd.matches(username, "^[a-zA-Z0-9_.-]*$")) {
 							res
@@ -59,6 +59,11 @@ router.post("/register", async (req: Request, res: Response) => {
 								date_joined: new Date().toLocaleDateString("en-US"),
 								email,
 								password: hashedPassword
+							});
+
+							await Contact.create({
+								user_id: user._id,
+								contacts: []
 							});
 
 							createCookie(user._id, res);
