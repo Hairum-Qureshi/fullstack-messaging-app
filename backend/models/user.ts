@@ -22,9 +22,9 @@ const userSchema = new Schema({
 		default:
 			"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
 	},
-	num_contacts: {
-		type: Number,
-		default: 0
+	blocked_users: {
+		type: [mongoose.Types.ObjectId],
+		default: []
 	}
 });
 
