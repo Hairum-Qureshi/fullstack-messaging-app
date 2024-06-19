@@ -3,6 +3,7 @@ import { Socket, io } from "socket.io-client";
 
 interface ContextData {
 	socket: Socket | undefined;
+	active: boolean;
 }
 
 interface SocketProps {
@@ -15,6 +16,7 @@ const socket_io = io("http://localhost:3000", { autoConnect: false });
 
 export const SocketProvider = ({ children }: SocketProps) => {
 	const [socket, setSocket] = useState<Socket>();
+	const [active, setActivityStatus] = useState(false);
 
 	useEffect(() => {
 		// Connect the socket
@@ -23,6 +25,7 @@ export const SocketProvider = ({ children }: SocketProps) => {
 		// Listen for the 'connect' event to log the socket ID
 		socket_io.on("connect", () => {
 			setSocket(socket_io);
+			setActivityStatus(socket_io.connected);
 		});
 
 		// Cleanup function to disconnect the socket when the component unmounts
@@ -32,7 +35,8 @@ export const SocketProvider = ({ children }: SocketProps) => {
 	}, []);
 
 	const value: ContextData = {
-		socket
+		socket,
+		active
 	};
 
 	return (
