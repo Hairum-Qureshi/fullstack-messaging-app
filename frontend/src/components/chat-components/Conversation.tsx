@@ -4,11 +4,13 @@ import Picker from "@emoji-mart/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFaceSmile, faImage } from "@fortawesome/free-regular-svg-icons";
 import "../../css/index.css";
+import useSocketContext from "../../contexts/socketContext";
 
 export default function Conversation() {
 	const [uploadedImages, setUploadedImages] = useState<string[]>([]);
 	const [isEmpty, setIsEmpty] = useState(true);
 	const contentEditableRef = useRef<HTMLDivElement>(null);
+	const { active } = useSocketContext()!;
 
 	function handleInput() {
 		if (contentEditableRef.current) {
@@ -17,6 +19,8 @@ export default function Conversation() {
 	}
 
 	// TODO - need to make sure the text message bubbles can handle images - if not, need to modify CSS so they're displayed appropriately
+
+	// TODO - fix the issue when you paste images and it goes beyond the set width, it adds a scrollbar and add a feature to delete the pasted images also.
 
 	function userPasted(e: any) {
 		// TODO - need to change 'any' to an appropriate type for 'e'
@@ -51,7 +55,11 @@ export default function Conversation() {
 							className="w-10 h-10 rounded-full border-2 border-black mr-2"
 						/>
 						<div className="absolute bottom-0 right-3">
-							<div className="rounded-full w-3 h-3 bg-green-500"></div>
+							{active ? (
+								<div className="rounded-full w-3 h-3 bg-green-500"></div>
+							) : (
+								<div className="rounded-full w-3 h-3 bg-red-500"></div>
+							)}
 						</div>
 					</div>
 					<div className="flex items-center">
@@ -59,7 +67,7 @@ export default function Conversation() {
 					</div>
 				</div>
 			</div>
-			<div className="flex-grow overflow-auto border-2 border-blue-700">
+			<div className="flex-grow overflow-auto">
 				<div className="flex p-2">
 					<img
 						src="https://pbs.twimg.com/media/FegInEPXkAAS1PE.png"
