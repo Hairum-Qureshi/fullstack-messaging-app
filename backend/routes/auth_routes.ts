@@ -23,6 +23,8 @@ function createCookie(user_id: mongoose.Types.ObjectId, res: Response) {
 	res.cookie("auth-session", token, { httpOnly: true, maxAge: 259200000 }); // 3 days in milliseconds
 }
 
+const emailRegex: RegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
 router.post("/register", async (req: Request, res: Response) => {
 	const { username, email, password } = req.body;
 
@@ -31,8 +33,6 @@ router.post("/register", async (req: Request, res: Response) => {
 	// TODO - need to add a filter to prevent users from adding swear words and inappropriate usernames
 
 	try {
-		const emailRegex: RegExp =
-			/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 		const containsValidCharacters: boolean = emailRegex.test(email);
 		const checkDuplicateUsernames = await User.findOne({ username });
 		const checkExistingEmails = await User.findOne({ email });
@@ -84,20 +84,38 @@ router.post("/register", async (req: Request, res: Response) => {
 });
 
 router.post("/login", async (req: Request, res: Response) => {
-	// TODO - need to connect to MongoDB and create a User model to handle authentication better. This does not check if the user's password is correct; only their email
-	// const { email, password } = req.body;
-	// const checkExistingEmail = await streamChat.queryUsers({ email });
-	// try {
-	// 	if (checkExistingEmail.users.length > 0) {
-	// 		const uid: string = checkExistingEmail.users[0].id;
-	// 		createCookie(uid, res);
-	// 		res.status(200).send("FOUND");
-	// 	} else {
-	// 		res.status(404).send("NOT FOUND");
-	// 	}
-	// } catch (error) {
-	// 	console.log(error);
-	// }
+	const { email, password } = req.body;
+	const containsValidCharacters: boolean = emailRegex.test(email);
+	const checkExistingEmails = await User.findOne({ email });
+	try {
+		if (!checkExistingEmails) {
+			res.status(404).send("No email corresponds with this email");
+		} else {
+			if (containsValidCharacters) {
+				const isValidEmail = validator.validate(email);
+				if (isValidEmail) {
+					const check_password = await bcrypt.compare(
+						password,
+						checkExistingEmails.password
+					);
+					if (check_password) {
+						createCookie(checkExistingEmails._id, res);
+						res.status(200).send("Successfully logged in!");
+					} else {
+						res.status(401).send("Incorrect password");
+					}
+				} else {
+					res.status(400).send("Email is not in valid format");
+				}
+			} else {
+				res
+					.status(400)
+					.send("Please make sure your email contains valid characters");
+			}
+		}
+	} catch (error) {
+		console.log(error);
+	}
 });
 
 export default router;
