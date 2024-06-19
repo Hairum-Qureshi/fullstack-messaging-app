@@ -8,12 +8,12 @@ import { useState } from "react";
 import useMessaging from "../../hooks/useMessaging";
 
 export default function Inbox() {
-	const { userData } = useAuthContext()!;
+	const { userData, signOut } = useAuthContext()!;
 	const [searchQuery, setSearchQuery] = useState("");
 
-	console.log(userData);
-
 	const { findUser } = useMessaging();
+
+	console.log(userData);
 
 	return userData?.message !== "user not logged in" && userData ? (
 		<div className="relative flex w-full box-border">
@@ -33,6 +33,9 @@ export default function Inbox() {
 					<FontAwesomeIcon icon={faBars} className="text-2xl" />
 					<h3 className="text-lg ml-3 font-semibold">
 						Hi, {userData?.username}
+						<button onClick={signOut} className="p-1 bg-gray-200 ml-5">
+							LOGOUT
+						</button>
 					</h3>
 				</div>
 			</div>
