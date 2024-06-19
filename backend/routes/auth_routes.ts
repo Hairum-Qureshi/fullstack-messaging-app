@@ -123,4 +123,14 @@ router.post("/login", async (req: Request, res: Response) => {
 	}
 });
 
+router.get("/logout", (req: Request, res: Response) => {
+	try {
+		res.clearCookie("auth-session");
+		res.status(200).send("Success");
+	} catch (error) {
+		console.log(error);
+		res.status(500).send("Error destroying session");
+	}
+});
+
 export default router;
