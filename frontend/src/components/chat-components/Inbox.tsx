@@ -10,10 +10,9 @@ import useMessaging from "../../hooks/useMessaging";
 export default function Inbox() {
 	const { userData, signOut } = useAuthContext()!;
 	const [searchQuery, setSearchQuery] = useState("");
+	const [selectedContact, setSelectedContact] = useState("");
 
 	const { findUser } = useMessaging();
-
-	console.log(userData);
 
 	return userData?.message !== "user not logged in" && userData ? (
 		<div className="relative flex w-full box-border">
@@ -28,7 +27,15 @@ export default function Inbox() {
 						onKeyDown={e => e.key === "Enter" && findUser(searchQuery)}
 					/>
 				</div>
-				<ContactBlock />
+				{userData.contacts?.length > 0 ? (
+					// need to map over 'contacts' here nad pass in the user's name as a prop to the component:
+					<ContactBlock />
+				) : (
+					<h1 className="font-semibold p-2 text-center">
+						You currently don't have any contacts. Enter a username to begin a
+						chat with someone!
+					</h1>
+				)}
 				<div className="bottom-0 p-3 absolute w-72 border-slate-400 border-2 bg-white flex items-center">
 					<FontAwesomeIcon icon={faBars} className="text-2xl" />
 					<h3 className="text-lg ml-3 font-semibold">
@@ -40,7 +47,14 @@ export default function Inbox() {
 				</div>
 			</div>
 			<div className="w-full hidden lg:block h-screen">
-				<Conversation />
+				{selectedContact ? (
+					<Conversation />
+				) : (
+					<h1 className="text-3xl text-center font-semibold mt-32 w-3/4 m-auto">
+						You currently don't have a message selected. <br /> <br /> Click on
+						a contact to open up their chat.
+					</h1>
+				)}
 			</div>
 		</div>
 	) : (
