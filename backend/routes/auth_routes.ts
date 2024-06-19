@@ -1,23 +1,25 @@
 import express from "express";
 import { Request, Response } from "express";
-import { StreamChat } from "stream-chat";
 import dotenv from "dotenv";
-import { randomUUID } from "crypto";
+import User from "../models/user";
 import validator from "email-validator";
 import vd from "validator";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 
 dotenv.config();
 
 const router = express.Router();
 
-export const streamChat = StreamChat.getInstance(
-	process.env.STREAM_API_KEY!,
-	process.env.STREAM_SECRET_KEY!
-);
-
-function createCookie(uid: string, res: Response) {
-	const token: string = streamChat.createToken(uid);
+function createCookie(user_id: mongoose.Types.ObjectId, res: Response) {
+	const payload = {
+		user_id
+	};
+	const secretKey: string = Math.floor(
+		Math.random() * Number(new Date())
+	).toString();
+	const token = jwt.sign(payload, secretKey, { expiresIn: "3d" });
 	res.cookie("auth-session", token, { httpOnly: true, maxAge: 259200000 }); // 3 days in milliseconds
 }
 
@@ -31,17 +33,17 @@ router.post("/register", async (req: Request, res: Response) => {
 	try {
 		const emailRegex: RegExp =
 			/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+		const containsValidCharacters: boolean = emailRegex.test(email);
+		const checkDuplicateUsernames = await User.findOne({ username });
+		const checkExistingEmails = await User.findOne({ email });
 
-		const containsValidCharacters = emailRegex.test(email);
-
-		const checkDuplicateUsernames = await streamChat.queryUsers({ username });
-		if (checkDuplicateUsernames.users.length === 0) {
-			const checkDuplicateEmails = await streamChat.queryUsers({ email });
-			if (checkDuplicateEmails.users.length > 0) {
+		if (!checkDuplicateUsernames) {
+			if (checkExistingEmails) {
 				res.status(409).send("Email already registered");
 			} else {
 				if (containsValidCharacters) {
 					const isValidEmail = validator.validate(email);
+
 					if (isValidEmail) {
 						if (!vd.matches(username, "^[a-zA-Z0-9_.-]*$")) {
 							res
@@ -50,20 +52,16 @@ router.post("/register", async (req: Request, res: Response) => {
 									"Username can only contain alphanumeric characters, underscores, periods, and dashes"
 								);
 						} else {
-							const uid = randomUUID().replace(/-/g, "");
-
 							const hashedPassword = await bcrypt.hash(password, 10);
 
-							streamChat.upsertUser({
-								id: uid,
+							const user = await User.create({
 								username,
+								date_joined: new Date().toLocaleDateString("en-US"),
 								email,
-								image:
-									"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
 								password: hashedPassword
 							});
 
-							createCookie(uid, res);
+							createCookie(user._id, res);
 
 							res.status(200).send("Successfully registered!");
 						}
@@ -87,20 +85,19 @@ router.post("/register", async (req: Request, res: Response) => {
 
 router.post("/login", async (req: Request, res: Response) => {
 	// TODO - need to connect to MongoDB and create a User model to handle authentication better. This does not check if the user's password is correct; only their email
-	const { email, password } = req.body;
-
-	const checkExistingEmail = await streamChat.queryUsers({ email });
-	try {
-		if (checkExistingEmail.users.length > 0) {
-			const uid: string = checkExistingEmail.users[0].id;
-			createCookie(uid, res);
-			res.status(200).send("FOUND");
-		} else {
-			res.status(404).send("NOT FOUND");
-		}
-	} catch (error) {
-		console.log(error);
-	}
+	// const { email, password } = req.body;
+	// const checkExistingEmail = await streamChat.queryUsers({ email });
+	// try {
+	// 	if (checkExistingEmail.users.length > 0) {
+	// 		const uid: string = checkExistingEmail.users[0].id;
+	// 		createCookie(uid, res);
+	// 		res.status(200).send("FOUND");
+	// 	} else {
+	// 		res.status(404).send("NOT FOUND");
+	// 	}
+	// } catch (error) {
+	// 	console.log(error);
+	// }
 });
 
 export default router;
