@@ -38,12 +38,28 @@ mongoose
 
 		const io = new Server(express_server, {
 			cors: {
-				origin: ["http://localhost:5174"]
+				origin: ["http://localhost:5174"],
+				credentials: true
 			}
 		});
 
 		io.on("connection", socket => {
-			console.log(`User with socket ID: ${socket.id} connected`);
+			console.log("user connected");
+
+			const session_token: string | undefined =
+				socket.handshake.headers.cookie?.split("auth-session=")[1];
+
+			if (session_token) {
+				const payloadBase64 = session_token.split(".")[1];
+				const payloadBuffer = Buffer.from(payloadBase64, "base64");
+				const payload = JSON.parse(payloadBuffer.toString());
+				const current_uid: string = payload.user_id;
+				console.log(current_uid);
+			}
+
+			socket.on("disconnect", socket => {
+				// console.log("user disconnected");
+			});
 		});
 	})
 	.catch(err => {
