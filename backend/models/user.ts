@@ -25,6 +25,9 @@ const userSchema = new Schema({
 	blocked_users: {
 		type: [mongoose.Types.ObjectId],
 		default: []
+	},
+	active: {
+		type: Boolean
 	}
 });
 

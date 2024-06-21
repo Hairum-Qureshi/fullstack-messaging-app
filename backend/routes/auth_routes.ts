@@ -8,6 +8,7 @@ import vd from "validator";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
+import { decodeToken } from "./user_routes";
 
 dotenv.config();
 
@@ -123,8 +124,17 @@ router.post("/login", async (req: Request, res: Response) => {
 	}
 });
 
-router.get("/logout", (req: Request, res: Response) => {
+router.get("/logout", async (req: Request, res: Response) => {
 	try {
+		const user_id: string = decodeToken(req);
+
+		await User.findByIdAndUpdate(
+			{ _id: user_id },
+			{
+				active: false
+			}
+		);
+
 		res.clearCookie("auth-session");
 		res.status(200).send("Success");
 	} catch (error) {
